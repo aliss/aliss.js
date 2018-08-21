@@ -6,13 +6,17 @@
 
 ## Usage
 
-1. Include the script on the page you want to use it
+1. Include the script on the header of the page where you want to use the plugin:
 
-`<script src="aliss.js"></script>`
+```
+<script src="aliss.js"></script>
+```
 
 2. Create an HTML element on the page where you want to see the plugin appear
 
-`<div id="aliss-target"></div>`
+```
+<div id="aliss-target"></div>
+```
 
 3. Create a script object, targetting it at the new element
 
@@ -22,9 +26,25 @@ window.aliss = new ALISS('#aliss-target',{});
 </script>
 ```
 
-### Example
+**Example**
 
 You can find [example code](https://glitch.com/~aliss-js), and the [demo](https://aliss-js.glitch.me/) on glitch.com.
+
+### Options
+
+`ALISS(target,options)` - takes two parameters, a target, and an options object.
+
+The options are as follows:
+
+```
+{
+  "q": <string: a default keyword>,
+  "category": <string: category slug>,
+  "show_category_select": <boolean: whether to display the category selector>,
+  "show_keyword_search": <boolean: whether to display the keyword input>,
+  "page_size": <int: number of services returned per page>,
+}
+```
 
 ## Links
 
