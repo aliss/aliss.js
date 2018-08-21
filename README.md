@@ -2,11 +2,13 @@
 
 > ALISS (A Local Information System for Scotland) is a service to help you find help and support close to you when you need it most.
 
-`aliss.js` is a javascript plugin for anyone who wants to embed ALISS search on their own site.
+[`aliss.js`](https://github.com/aliss/aliss.js/tree/master/dist) is a javascript plugin for anyone who wants to embed ALISS search on their own site.
 
 ## Usage
 
-1. Include the script on the header of the page where you want to use the plugin:
+0. <a href="https://raw.githubusercontent.com/aliss/aliss.js/master/dist/aliss.js" download>Download `aliss.js`</a>
+
+1. Include the script on the header of the page where you want to use the plugin.
 
 ```
 <script src="aliss.js"></script>
@@ -28,13 +30,13 @@ window.aliss = new ALISS('#aliss-target',{});
 
 **Example**
 
-You can find [example code](https://glitch.com/~aliss-js), and the [demo](https://aliss-js.glitch.me/) on glitch.com.
+You can find [example code](https://glitch.com/~aliss-js), and a [demo](https://aliss-js.glitch.me/) on glitch.com.
 
 ### Options
 
 `ALISS(target,options)` - takes two parameters, a target, and an options object.
 
-The options are as follows:
+Potential options are:
 
 ```
 {
