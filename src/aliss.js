@@ -44,7 +44,7 @@ const ALISSRequest = function() {
 
 const ALISSConfig = function () {
   var context = this;
-  context.config = null;
+  context.config = {};
 
   context.displayOptions = {
     "show_category_select": true,
