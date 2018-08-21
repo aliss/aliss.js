@@ -1,6 +1,10 @@
 const $ = require('jquery');
 
 const Request = function() {
+  var context = this;
+
+  this.lastResponse = {};
+
   this.parametersObject = {
     "postcode": null,
     "q": null,
@@ -8,70 +12,68 @@ const Request = function() {
     "location_type": null,
     "radius": 5000,
     "page_size": 10,
-    "categorySelected": null,
-    "page": 1,
+    "page": 1
   };
-}
 
-// Function to convert the stores parameters to a no null object
-Request.prototype.prepareParams = function() {
-  var currentQuery = this.parametersObject;
-  var queryParameters = {};
-  for (var prop in currentQuery){
-    if (currentQuery[prop] !== null) {
-      queryParameters[prop]= currentQuery[prop];
-    }
+  // Function to convert the stores parameters to a no null object
+  Request.prototype.prepareParams = function() {
+    var currentQuery = context.parametersObject;
+    var queryParameters = {};
+    for (var prop in currentQuery){
+      if (currentQuery[prop] !== null) {
+        queryParameters[prop]= currentQuery[prop];
+      }
+    };
+    return queryParameters;
+  }
+
+  //  Class method to set the page size parameter of the global request object
+  Request.prototype.pageSize = function (pageSize) {
+    context.parametersObject.page_size = pageSize;
   };
-  return queryParameters;
+
+  Request.prototype.category = function (category) {
+    context.parametersObject.category = category;
+  }
+
+  Request.prototype.keyword = function (keyword) {
+    context.parametersObject.q = keyword;
+  }
 }
-
-//  Class method to set the page size parameter of the global request object
-Request.prototype.pageSize = function (pageSize) {
-  this.parametersObject.page_size = pageSize;
-};
-
-Request.prototype.category = function (category) {
-  this.parametersObject.category = category;
-}
-
-Request.prototype.keyword = function (keyword) {
-  this.parametersObject.q = keyword;
-}
-
 
 const DisplayParameters = function () {
-  this.displayOptions = {
+  var context = this;
+
+  context.displayOptions = {
     "show_category_select": true,
     "show_keyword_search": true
   };
 
   DisplayParameters.prototype.hideCategories = function () {
-    this.displayOptions.show_category_select = false;
+    context.displayOptions.show_category_select = false;
   }
 
   DisplayParameters.prototype.hideKeyword = function () {
-    this.displayOptions.show_keyword_search = false;
+    context.displayOptions.show_keyword_search = false;
   }
 };
 
 
 const OptionsObject = function() {
-  this.optionsObject = null;
+  var context = this;
+  context.optionsObject = null;
 
   OptionsObject.prototype.setOptions = function(optionsObject){
-    this.optionsObject = optionsObject;
+    context.optionsObject = optionsObject;
   }
 
-  OptionsObject.prototype.processOptions = function (){
-    if (this.optionsObject != null){
-      for (var option in this.optionsObject) {
-
+  OptionsObject.prototype.processOptions = function(display, request){
+    if (context.optionsObject != null){
+      for (var option in context.optionsObject) {
         if (option.includes("show")){
-          display.displayOptions[option] = this.optionsObject[option];
-        }
-
-        else {
-          request.parametersObject[option] = this.optionsObject[option];
+          display.displayOptions[option] = context.optionsObject[option];
+        } else {
+          request.parametersObject[option] = context.optionsObject[option];
         }
       }
     } else {
@@ -83,52 +85,36 @@ const OptionsObject = function() {
 
 
 const ALISS = function () {
- this.aliss = null;
- this.optionsObject = null;
- this.request = null;
- this.display = null;
+  var context = this;
+  this.aliss = null;
+  this.optionsObject = null;
+  this.request = null;
+  this.display = null;
 
-   // For basic implementation of the ALISS.js app
-  ALISS.prototype.init = function (target) {
-     //   Creates new request object for aliss instance
-     this.request = new Request();
-     //   Creates an options object which will default to null
-     this.optionsObject = new OptionsObject();
-     // Creates a default display parameters object
-     this.display = new DisplayParameters();
-     //   Now that request object is made generate form in the supplied div
-     generateForm(target);
-   }
+  ALISS.prototype.init = function(target, optionsObject) {
+    context.request = new Request();
+    context.optionsObject = new OptionsObject();
+    context.display = new DisplayParameters();
+    if (optionsObject){
+      context.optionsObject.setOptions(optionsObject);
+    }
+    context.generateForm(target);
+  }
 
-   // Overloaded AlISS initialise with argument of ptan options argument
-  var init = function (target, optionsObject) {
-     //   Creates new display object for aliss instance
-     display = new DisplayParameters();
-     //   Creates new request object for aliss instance
-     request = new Request();
-     //   Take the user defined options object and override the display and request instances
-     optionsObject = new OptionsObject();
-     optionsObject.setOptions(optionsObject);
-     //   Now that the display and request options are correct generate form in the supplied div
-     generateForm(target);
-   }
-
-
-  // Method to Render a Basic Form Input
-  var generateForm = (target) => {
+  ALISS.prototype.generateForm = (target) => {
     $(target).empty();
     $(target).append("<div id=aliss-target-div></div>")
-    renderForm();
-  };
+    context.renderForm();
+  }
 
-  var regenerateForm = () => {
-    window.request = new Request();
-    renderForm();
-  };
+  ALISS.prototype.regenerateForm = () => {
+    context.request = new Request();
+    context.renderForm();
+  }
 
-  var renderForm = () => {
-    this.optionsObject.processOptions();
-    var inputForm= document.createElement('form');
+  ALISS.prototype.renderForm = () => {
+    context.optionsObject.processOptions(context.display, context.request);
+    var inputForm = document.createElement('form');
     inputForm.id = "aliss-input-form"
     $(inputForm).append("<input type=text id=aliss-postcode-field></input>");
     $(inputForm).append("<input type=submit id=aliss-submit></input>");
@@ -142,20 +128,19 @@ const ALISS = function () {
     $('#aliss-load-animation').hide();
     $('#aliss-input-form').append("<div id=aliss-invalid-message>Please Enter Valid Postcode</div>");
     $('#aliss-invalid-message').hide();
-    renderCategoryDropdown()
-    $('#aliss-submit').click(handlePostCodeSubmit);
+    context.renderCategoryDropdown()
+    $('#aliss-submit').click(this.handlePostCodeSubmit);
   }
-
 
   // On click of form submit button take user input and call the API
-  var handlePostCodeSubmit = function (event) {
+  ALISS.prototype.handlePostCodeSubmit = function(event) {
     event.preventDefault()
-    var formattedPostcode = processPostcode( $('#aliss-postcode-field')[0].value);
-    window.request.parametersObject["postcode"] = formattedPostcode;
-    apiRequest(renderResults);
+    var formattedPostcode = context.processPostcode( $('#aliss-postcode-field')[0].value);
+    context.request.parametersObject["postcode"] = formattedPostcode;
+    context.apiRequest(context.renderResults);
   }
 
-  var processPostcode = function (submitted) {
+  ALISS.prototype.processPostcode = function (submitted) {
     var trimmedString = submitted.trim();
     var noSpace = trimmedString.replace(/\s/g, '');
     var upCase = noSpace.toUpperCase();
@@ -167,102 +152,91 @@ const ALISS = function () {
   }
 
   // Call the API with the User Data and call the RenderList method function with response
-  var apiRequest = (renderFunction) => {
+  ALISS.prototype.apiRequest = (renderFunction) => {
     $('#aliss-load-animation').show();
     setTimeout(function(){$('#aliss-invalid-message').show()}, 1000);
     $.ajax({
       url: "https://www.aliss.org/api/v4/services/",
-      data: window.request.prepareParams(),
-      success: renderFunction
+      data: context.request.prepareParams(),
+      success: function(response){ 
+        renderFunction(response); 
+        context.lastResponse = response;
+      }
       // error: renderPostcodeError
     });
     $('#aliss-load-animation').hide();
     $('#aliss-invalid-message').hide();
   }
 
-  // Render the results div
-  var renderResults = (response) => {
+  //Render the results div
+  ALISS.prototype.renderResults = (response) => {
     var query = $('#aliss-postcode-field').val();
     $('#aliss-input-form').hide();
     $('#aliss-invalid-message').hide();
-    $('#aliss-search-header-div').append("<h2 class=aliss-results-heading>Help & support in "+ processPostcode(query) +"</h2>");
+    $('#aliss-search-header-div').append("<h2 class=aliss-results-heading>Help & support in "+ context.processPostcode(query) +"</h2>");
     $('#aliss-search-header-div').append("<button id=aliss-search-again-header class=aliss-search-again-header>Search Again</button>");
-    $('#aliss-search-again-header').click(regenerateForm)
+    $('#aliss-search-again-header').click(context.regenerateForm)
     $('#aliss-search-header-div').show();
     $('#aliss-target-div').append("<div id=aliss-results-div class=aliss-results-div><div>")
     $('#aliss-results-div').empty();
     $('#aliss-results-div').append("<div id=aliss-filter-field-div class=aliss-filter-field-div></div>")
     $('#aliss-results-div').append("<div id=aliss-listings-div class=listings-div></div>")
     $('#aliss-results-div').append("<div id=aliss-category-selector-div class=aliss-category-selector-div><d/iv>")
-    if (this.display.displayOptions.show_category_select) {
+    if (context.display.displayOptions.show_category_select) {
       $('#aliss-category-selector-div').show();
     }
     $('#aliss-results-div').append("<div id=aliss-pagination-div></div>");
-    renderFilterFields(response);
-    renderServiceList(response);
-    renderPagination();
+    context.renderFilterFields(response);
+    context.renderServiceList(response);
   };
 
-  var renderPagination = function () {
+  ALISS.prototype.renderPagination = function () {
     $('#aliss-pagination-div').empty();
-    $('#aliss-pagination-div').append("<button id=aliss-previous-page>Previous Page</button>");
-    $('#aliss-previous-page').val("previous");
+
+    if (context.request.parametersObject["page"] > 1){
+      $('#aliss-pagination-div').append("<button id=aliss-previous-page>Previous Page</button>");
+      $('#aliss-previous-page').val("previous");
+    }
+
     $('#aliss-pagination-div').append("<p id=aliss-current-page></p>");
-    $('#aliss-current-page').text("Page: " + window.request.parametersObject["page"]);
-    $('#aliss-pagination-div').append("<button id=aliss-next-page>Next Page</button>");
-    $('#aliss-next-page').val("next");
-    $('#aliss-pagination-div button').click(handlePageChange);
+    var p = (context.request.parametersObject["page"]) ? context.request.parametersObject["page"] : "1";
+    $('#aliss-current-page').text("Page: " + p);
+
+    if ($('#aliss-next-page-link').val() != "") {
+      $('#aliss-pagination-div').append('<button id="aliss-next-page">Next Page</button>');
+      $('#aliss-next-page').val("next");
+    }
+
+    $('#aliss-pagination-div button').click(context.handlePageChange);
     $('#aliss-pagination-div').append("<h4 id=aliss-no-previous-message>Start of Pages Please Select Next</h4>");
     $('#aliss-no-previous-message').hide();
     $('#aliss-pagination-div').append("<h4 id=aliss-no-next-message>End of Results Please Go Back</h4>");
     $('#aliss-no-next-message').hide();
   }
 
-  var handlePageChange = function (event) {
-
+  ALISS.prototype.handlePageChange = function (event) {
     if (event.target.value === "next"){
-
-      if ($('#aliss-next-page-link').val() === "") {
-        $('#aliss-no-next-message').show();
-      }
-
-      else {
-        window.request.parametersObject["page"] += 1;
-        apiRequest(renderServiceList);
-        renderPagination();
-      }
+      context.request.parametersObject["page"] += 1;
+    } else if (event.target.value === "previous") {
+      context.request.parametersObject["page"] -= 1;
     }
 
-    if (event.target.value === "previous") {
-
-      if (window.request.parametersObject["page"] > 1){
-        window.request.parametersObject["page"] -= 1;
-        apiRequest(renderServiceList);
-        renderPagination();
-      }
-      else {
-        $('#aliss-no-previous-message').show();
-      }
-    }
+    context.apiRequest(context.renderServiceList);  
   }
 
-  // Return the top level categories.
-  var renderCategoryDropdown = function () {
+  ALISS.prototype.renderCategoryDropdown = function () {
     $.ajax({
       url: "https://www.aliss.org/api/v4/categories/",
       data: {},
-      success: renderCategorySelector
+      success: function(response){
+        $('#aliss-category-selector-div').empty();
+        context.renderCategoryOptions(response);
+      }
     })
-  };
+  }
 
-  // Render the category selector field
-  var renderCategorySelector = function(response) {
-    $('#aliss-category-selector-div').empty();
-    renderCategoryOptions(response);
-  };
-
-  // Render the top level categories and filter the results based on their selection.
-  var renderCategoryOptions = function (response) {
+  //Render the top level categories and filter the results based on their selection.
+  ALISS.prototype.renderCategoryOptions = function (response) {
     var dropdownDiv = document.createElement('div')
     dropdownDiv.id = "aliss-dropdown-div";
     dropdownDiv.className = "aliss-category-dropdown-div";
@@ -282,31 +256,30 @@ const ALISS = function () {
       $('#' + option.id).data(category);
     });
 
-    if (window.request.parametersObject["category"] != null){
-
-      var predefinedCategory =  window.request.parametersObject["category"];
+    if (this.request.parametersObject["category"] != null){
+      var predefinedCategory =  this.request.parametersObject["category"];
 
       if ($('#aliss-dropdown:contains(' + predefinedCategory + ')')) {
         $('#' + predefinedCategory).attr("selected", true);
         var categoryObject = $('#' + predefinedCategory).data();
         var target = $('#' + predefinedCategory).parent().parent();
-        renderSubCategoryDropdown(categoryObject, target);
+        this.renderSubCategoryDropdown(categoryObject, target);
       }
     }
 
-    $('#aliss-dropdown').change(handleFilterByCategory);
-  };
-
+    $('#aliss-dropdown').change(context.handleFilterByCategory);
+  }
 
   // When user selects dropdown option re call API and render the filtered service list
-  var handleFilterByCategory = () => {
+  ALISS.prototype.handleFilterByCategory = () => {
     $(this).siblings().remove();
 
     //   If the "blank" category option is selected remove category filter and render the list of services
     if (event.target.value == "categories"){
-      window.request.parametersObject["category"] = null;
-      apiRequest(renderServiceList)
-      renderCategoryDropdown()
+      context.request.parametersObject["category"] = null;
+      context.request.parametersObject["page"] = null;
+      context.apiRequest(context.renderServiceList)
+      context.renderCategoryDropdown();
       return;
     }
     //   If the "blank" sub-category option is selected remove sub-category filter and render the list of services
@@ -317,20 +290,22 @@ const ALISS = function () {
       var categoryObject = $('#' + sortedID).data();
       var target = $(this).parent();
       target.children().remove();
-      renderSubCategoryDropdown(categoryObject, target);
-      window.request.parametersObject["category"] = sortedID;
-      apiRequest(renderServiceList);
+      context.renderSubCategoryDropdown(categoryObject, target);
+      context.request.parametersObject["category"] = sortedID;
+      context.request.parametersObject["page"] = null;
+      context.apiRequest(context.renderServiceList);
       return;
     }
 
     var categoryObject = $('#' + event.target.value).data();
     var target = $(this).parent();
-    renderSubCategoryDropdown(categoryObject, target);
-    this.request.parametersObject["category"] = event.target.value;
-    apiRequest(renderServiceList);
+    context.renderSubCategoryDropdown(categoryObject, target);
+    context.request.parametersObject["category"] = event.target.value;
+    context.request.parametersObject["page"] = null;
+    context.apiRequest(context.renderServiceList);
   }
 
-  var renderSubCategoryDropdown = function (categoryObject, target) { //RORY: We need to handle what happens when a user selects a sub-category then wants to clear the sub-category
+  ALISS.prototype.renderSubCategoryDropdown = function (categoryObject, target) { //RORY: We need to handle what happens when a user selects a sub-category then wants to clear the sub-category
     if (categoryObject.sub_categories.length === 0){
       return;
     }
@@ -358,19 +333,16 @@ const ALISS = function () {
       $('#' + subCategoryOption.id).data(item);
     });
 
-    $(subCategoryDropDown).change(handleFilterByCategory)
-
+    $(subCategoryDropDown).change(context.handleFilterByCategory);
   }
 
-  // Render the filters fields
-  var renderFilterFields = function(response) {
-    $('#aliss-filter-field-div').append("<h3 class=aliss-filter-field-header>Customise Results</h3>")
-    renderKeywordSearch()
-    renderLocationTypeRadio()
+  ALISS.prototype.renderFilterFields = function(response) {
+    $('#aliss-filter-field-div').append("<h3 class=aliss-filter-field-header>Filter results</h3>")
+    context.renderKeywordSearch()
+    context.renderLocationTypeRadio()
   };
 
-  // Render the location type radio buttons
-  var renderLocationTypeRadio = function () {
+  ALISS.prototype.renderLocationTypeRadio = function () {
     $('#aliss-filter-field-div').append("<div id=location-type-div class=location-type-div></div>");
     $('#location-type-div').append("<form id=aliss-form-locality></form>")
     // $('#aliss-form-locality').append("<fieldset id=aliss-fieldset></fieldset>")
@@ -384,62 +356,65 @@ const ALISS = function () {
     $('#aliss-form-locality').append("<input id=national type=radio name=locality value=national></input>")
     $('#aliss-form-locality').append("<label for=national>Only show services that operate nationally</input>")
     $('#aliss-form-locality').append("<br>")
-    $('input[type=radio][name=locality]').change(handleFilterByLocality);
+    $('input[type=radio][name=locality]').change(context.handleFilterByLocality);
   }
 
-  // Render the keyword search text input
-  var renderKeywordSearch = () => {
-
+  //Render the keyword search text input
+  ALISS.prototype.renderKeywordSearch = () => {
     $('#aliss-filter-field-div').append("<div id=aliss-keyword-search-div></div>");
     $('#aliss-keyword-search-div').empty();
-    $('#aliss-keyword-search-div').append("<label>Filter by keyword:</label>")
 
-    if (this.request.parametersObject.q !== null){
-      $('#aliss-keyword-search-div').append("<input type=text id=aliss-keyword-search></input>");
-      $('#aliss-keyword-search').val(this.request.parametersObject.q);
-      apiRequest(renderServiceList)
+    var form = $("<form></form>");
+    form.append("<label>Filter by keyword:</label>")
+    var formInput = $("<input type=text id=aliss-keyword-search placeholder='e.g. Diabetes'></input>");
+    if (context.request.parametersObject.q !== null){
+      formInput.val(context.request.parametersObject.q);
+      //context.apiRequest(context.renderServiceList)
     }
+    form.append(formInput);
+    form.append("<input type=submit id=aliss-keyword-submit></input>");
 
-    else {
-      $('#aliss-keyword-search-div').append("<input type=text id=aliss-keyword-search placeholder='e.g. Diabetes'></input>")
-    }
+    $('#aliss-keyword-search-div').append(form);
 
-    $('#aliss-keyword-search-div').append("<input type=submit id=aliss-keyword-submit></input>")
-    $('#aliss-keyword-submit').click(handleFilterByKeyword);
+    form.submit(function( event ) {
+      console.log("Handler for submit() called.");
+      event.preventDefault();
+    });
 
-    if (this.display.displayOptions.show_keyword_search) {
+    $('#aliss-keyword-submit').click(context.handleFilterByKeyword);
+
+    if (!context.display.displayOptions.show_keyword_search) {
       $('#aliss-keyword-search-div').hide();
     }
   }
 
   // Handle the change of location type radio button selection
-  var handleFilterByLocality = function (evt) {
-    this.request.parametersObject["location_type"] = evt.target.value;
-    apiRequest(renderServiceList)
+  ALISS.prototype.handleFilterByLocality = function (evt) {
+    context.request.parametersObject["page"] = null;
+    context.request.parametersObject["location_type"] = evt.target.value;
+    context.apiRequest(context.renderServiceList)
   }
 
   // Handle the user searching by keyword API call.
   // Currently not changing results due to potential server side bug
-  var handleFilterByKeyword = function(event) {
+  ALISS.prototype.handleFilterByKeyword = function(event) {
     event.preventDefault();
-    window.request.parametersObject["q"] = $('#aliss-keyword-search')[0].value
-    console.log(window.request.parametersObject["q"])
-    apiRequest(renderServiceList)
+    context.request.parametersObject["page"] = null;
+    context.request.parametersObject["q"] = $('#aliss-keyword-search')[0].value
+    context.apiRequest(context.renderServiceList)
   };
 
-  // Render lists from API response
-  var renderServiceList = function(response) {
-    console.log("return from API", response);
-
+  //Render lists from API response
+  ALISS.prototype.renderServiceList = function(response) {
     var servicesArray = response.data;
     if (servicesArray.length < 1){
-      renderSearchAgainButton()
+      context.renderSearchAgainButton()
       $('#aliss-pagination-div').hide()
       return;
     }
     var list = document.createElement('div');
     $.each(servicesArray, function(index, item){
-      renderListItem(list, item);
+      context.renderListItem(list, item);
     });
     $('#aliss-listings-div').empty();
     $('#aliss-listings-div').append("<p id=aliss-next-page-link display=hidden></p>")
@@ -447,10 +422,12 @@ const ALISS = function () {
     $('#aliss-listings-div').append(list);
     $('#aliss-invalid-message').hide();
     $('#aliss-pagination-div').show();
+
+    context.renderPagination();
   };
 
-  // Render the service list items
-  var renderListItem = function(list, service){
+  //Render the service list items
+  ALISS.prototype.renderListItem = function(list, service){
     var serviceCardDiv = document.createElement('div')
     serviceCardDiv.className = "aliss-service-card-div"
 
@@ -491,12 +468,14 @@ const ALISS = function () {
       serviceCardDiv.appendChild(serviceLocationDiv)
     }
 
-    var serviceDetailsDiv = document.createElement('div')
-    var serviceDetails = document.createElement('ul')
+    var serviceDetailsDiv = document.createElement('div');
+    var serviceDetails = document.createElement('ul');
 
-    var serviceTelephone = document.createElement('li')
-    serviceTelephone.textContent = service.phone;
-    serviceDetails.appendChild(serviceTelephone)
+    if (service.phone) {
+      var serviceTelephone = document.createElement('li');
+      serviceTelephone.textContent = service.phone;
+      serviceDetails.appendChild(serviceTelephone);
+    }
 
     if (service.url != "") {
       var serviceWebsiteLi = document.createElement('li')
@@ -513,7 +492,7 @@ const ALISS = function () {
       serviceAreasLink.textContent = "Service Areas:"
       serviceAreasLi.appendChild(serviceAreasLink)
       serviceDetails.appendChild(serviceAreasLi)
-      handleRenderServiceAreaList(service, serviceDetails)
+      context.handleRenderServiceAreaList(service, serviceDetails)
     }
 
     serviceDetailsDiv.appendChild(serviceDetails);
@@ -525,7 +504,7 @@ const ALISS = function () {
     $(list).append(serviceCardDiv);
   };
 
-  var handleRenderServiceAreaList = function (service, serviceDetails) {
+  ALISS.prototype.handleRenderServiceAreaList = function (service, serviceDetails) {
     var serviceAreaListDiv = document.createElement('div')
     var serviceAreaList = document.createElement('ul')
     $.each(service.service_areas , function(index, item){
@@ -537,20 +516,20 @@ const ALISS = function () {
     serviceDetails.appendChild(serviceAreaListDiv)
   }
 
-  // Render a search again button which increases radius of search
-  var renderSearchAgainButton = function () {
+  //Render a search again button which increases radius of search
+  ALISS.prototype.renderSearchAgainButton = function () {
     $('#aliss-listings-div').empty()
     $('#aliss-listings-div').append("<h3>Sorry, we couldn't find anything using those terms near EH21 6UW.</h3>")
     $('#aliss-listings-div').append("<p>You can try searching again over a wider area:</p>")
     $('#aliss-listings-div').append("<button id=aliss-search-again-radius>Search Again</button>")
     $('#aliss-invalid-message').hide();
-    $('#aliss-search-again-radius').click(handleSearchAgainRadius);
+    $('#aliss-search-again-radius').click(context.handleSearchAgainRadius);
   }
 
   // When the user selects search again when presented with no results the API is called with the radius doubled
-  var handleSearchAgainRadius = function () {
-    window.request.parametersObject["radius"] = (window.request.parametersObject["radius"] * 2)
-    apiRequest(renderServiceList);
+  ALISS.prototype.handleSearchAgainRadius = function () {
+    context.request.parametersObject["radius"] = (context.request.parametersObject["radius"] * 2)
+    context.apiRequest(context.renderServiceList);
   }
 
 };
