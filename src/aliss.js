@@ -89,7 +89,8 @@ const ALISS = function(target, config) {
   ALISS.prototype.init = function(target, config) {
     context.request = new ALISSRequest();
     context.config = new ALISSConfig();
-    if (config){ context.config.setOptions(config);  }
+    if (target == undefined) { target = 'body'; }
+    if (config){ context.config.setOptions(config); }
     context.generateForm(target);
   }
 
