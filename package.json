@@ -1,8 +1,17 @@
 {
   "name": "aliss.js",
   "version": "1.0.0",
-  "description": "",
+  "description": "ALISS Web Plugin",
   "private": true,
+  "contributors": [{
+    "name" : "Rory Gianni",
+    "email" : "hello@rgianni.cc",
+    "url" : "https://github.com/digitalWestie"
+  }, {
+    "name" : "Mike Henneghan",
+    "email" : "m.heneghan@live.co.uk",
+    "url" : "https://github.com/Mike-Heneghan"
+  }],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack"
@@ -11,9 +20,8 @@
     "type": "git",
     "url": "git+https://github.com/aliss/aliss.js.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["ALISS"],
+  "license": "MPL",
   "bugs": {
     "url": "https://github.com/aliss/aliss.js/issues"
   },
