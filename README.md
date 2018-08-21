@@ -6,21 +6,21 @@
 
 ## Usage
 
-0. <a href="https://raw.githubusercontent.com/aliss/aliss.js/master/dist/aliss.js" download>Download `aliss.js`</a>
+1. <a href="https://raw.githubusercontent.com/aliss/aliss.js/master/dist/aliss.js" download>Download `aliss.js`</a>
 
-1. Include the script on the header of the page where you want to use the plugin.
+2. Include the script on the header of the page where you want to use the plugin.
 
 ```
 <script src="aliss.js"></script>
 ```
 
-2. Create an HTML element on the page where you want to see the plugin appear
+3. Create an HTML element on the page where you want to see the plugin appear
 
 ```
 <div id="aliss-target"></div>
 ```
 
-3. Create a script object, targetting it at the new element
+4. Put this at the bottom of the page with the new element
 
 ```
 <script>
