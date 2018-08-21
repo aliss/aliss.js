@@ -1,6 +1,6 @@
 const $ = require('jquery');
 
-const Request = function() {
+const ALISSRequest = function() {
   var context = this;
 
   this.lastResponse = {};
@@ -16,7 +16,7 @@ const Request = function() {
   };
 
   // Function to convert the stores parameters to a no null object
-  Request.prototype.prepareParams = function() {
+  ALISSRequest.prototype.prepareParams = function() {
     var currentQuery = context.parametersObject;
     var queryParameters = {};
     for (var prop in currentQuery){
@@ -28,56 +28,51 @@ const Request = function() {
   }
 
   //  Class method to set the page size parameter of the global request object
-  Request.prototype.pageSize = function (pageSize) {
+  ALISSRequest.prototype.pageSize = function (pageSize) {
     context.parametersObject.page_size = pageSize;
   };
 
-  Request.prototype.category = function (category) {
+  ALISSRequest.prototype.category = function (category) {
     context.parametersObject.category = category;
   }
 
-  Request.prototype.keyword = function (keyword) {
+  ALISSRequest.prototype.keyword = function (keyword) {
     context.parametersObject.q = keyword;
   }
 }
 
-const DisplayParameters = function () {
+const ALISSConfig = function () {
   var context = this;
+  context.config = null;
 
   context.displayOptions = {
     "show_category_select": true,
     "show_keyword_search": true
   };
 
-  DisplayParameters.prototype.hideCategories = function () {
+  ALISSConfig.prototype.hideCategories = function () {
     context.displayOptions.show_category_select = false;
   }
 
-  DisplayParameters.prototype.hideKeyword = function () {
+  ALISSConfig.prototype.hideKeyword = function () {
     context.displayOptions.show_keyword_search = false;
   }
-};
 
-
-const OptionsObject = function() {
-  var context = this;
-  context.optionsObject = null;
-
-  OptionsObject.prototype.setOptions = function(optionsObject){
-    context.optionsObject = optionsObject;
+  ALISSConfig.prototype.setOptions = function(config){
+    context.config = config;
   }
 
-  OptionsObject.prototype.processOptions = function(display, request){
-    if (context.optionsObject != null){
-      for (var option in context.optionsObject) {
+  ALISSConfig.prototype.processOptions = function(request){
+    if (context.config != null){
+      for (var option in context.config) {
         if (option.includes("show")){
-          display.displayOptions[option] = context.optionsObject[option];
+          context.displayOptions[option] = context.config[option];
         } else {
-          request.parametersObject[option] = context.optionsObject[option];
+          request.parametersObject[option] = context.config[option];
         }
       }
     } else {
-      request = new Request();
+      request = new ALISSRequest();
       return
     }
   }
@@ -87,17 +82,13 @@ const OptionsObject = function() {
 const ALISS = function () {
   var context = this;
   this.aliss = null;
-  this.optionsObject = null;
+  this.config = null;
   this.request = null;
-  this.display = null;
 
-  ALISS.prototype.init = function(target, optionsObject) {
-    context.request = new Request();
-    context.optionsObject = new OptionsObject();
-    context.display = new DisplayParameters();
-    if (optionsObject){
-      context.optionsObject.setOptions(optionsObject);
-    }
+  ALISS.prototype.init = function(target, config) {
+    context.request = new ALISSRequest();
+    context.config = new ALISSConfig();
+    if (config){ context.config.setOptions(config);  }
     context.generateForm(target);
   }
 
@@ -108,12 +99,12 @@ const ALISS = function () {
   }
 
   ALISS.prototype.regenerateForm = () => {
-    context.request = new Request();
+    context.request = new ALISSRequest();
     context.renderForm();
   }
 
   ALISS.prototype.renderForm = () => {
-    context.optionsObject.processOptions(context.display, context.request);
+    context.config.processOptions(context.request);
     var inputForm = document.createElement('form');
     inputForm.id = "aliss-input-form"
     $(inputForm).append("<input type=text id=aliss-postcode-field></input>");
@@ -182,7 +173,7 @@ const ALISS = function () {
     $('#aliss-results-div').append("<div id=aliss-filter-field-div class=aliss-filter-field-div></div>")
     $('#aliss-results-div').append("<div id=aliss-listings-div class=listings-div></div>")
     $('#aliss-results-div').append("<div id=aliss-category-selector-div class=aliss-category-selector-div><d/iv>")
-    if (context.display.displayOptions.show_category_select) {
+    if (context.config.displayOptions.show_category_select) {
       $('#aliss-category-selector-div').show();
     }
     $('#aliss-results-div').append("<div id=aliss-pagination-div></div>");
@@ -369,7 +360,6 @@ const ALISS = function () {
     var formInput = $("<input type=text id=aliss-keyword-search placeholder='e.g. Diabetes'></input>");
     if (context.request.parametersObject.q !== null){
       formInput.val(context.request.parametersObject.q);
-      //context.apiRequest(context.renderServiceList)
     }
     form.append(formInput);
     form.append("<input type=submit id=aliss-keyword-submit></input>");
@@ -383,7 +373,7 @@ const ALISS = function () {
 
     $('#aliss-keyword-submit').click(context.handleFilterByKeyword);
 
-    if (!context.display.displayOptions.show_keyword_search) {
+    if (!context.config.displayOptions.show_keyword_search) {
       $('#aliss-keyword-search-div').hide();
     }
   }
