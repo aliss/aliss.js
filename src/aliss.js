@@ -41,6 +41,7 @@ const ALISSRequest = function() {
   }
 }
 
+
 const ALISSConfig = function () {
   var context = this;
   context.config = null;
@@ -80,10 +81,11 @@ const ALISSConfig = function () {
 
 
 const ALISS = function () {
-  var context = this;
   this.aliss = null;
   this.config = null;
   this.request = null;
+
+  var context = this;
 
   ALISS.prototype.init = function(target, config) {
     context.request = new ALISSRequest();

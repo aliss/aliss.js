@@ -8,10 +8,11 @@
     <div id="aliss-target"></div>
     <script>
       document.addEventListener('DOMContentLoaded', () => {
-        var aliss = new ALISS();
-        aliss.init('#aliss-target',{
+        window.aliss = new ALISS();
+        window.aliss.init('#aliss-target',{
           "show_category_select": false,
-          "q": "energy",
+          //"q": "energy",
+          "category": "money",
           "show_keyword_search": true,
           "page_size": 2,
         });
