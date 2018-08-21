@@ -80,11 +80,10 @@ const ALISSConfig = function () {
 }
 
 
-const ALISS = function () {
+const ALISS = function(target, config) {
   this.aliss = null;
   this.config = null;
   this.request = null;
-
   var context = this;
 
   ALISS.prototype.init = function(target, config) {
@@ -524,6 +523,7 @@ const ALISS = function () {
     context.apiRequest(context.renderServiceList);
   }
 
+  context.init(target, config);
 };
 
 module.exports = ALISS;

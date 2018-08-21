@@ -6,16 +6,13 @@
   </head>
   <body>
     <div id="aliss-target"></div>
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        window.aliss = new ALISS();
-        window.aliss.init('#aliss-target',{
-          "show_category_select": false,
-          //"q": "energy",
-          "category": "money",
-          "show_keyword_search": true,
-          "page_size": 2,
-        });
+    <script>  
+      window.aliss = new ALISS('#aliss-target',{
+        "show_category_select": false,
+        //"q": "energy",
+        "category": "money",
+        "show_keyword_search": true,
+        "page_size": 2,
       });
     </script>
   </body>
