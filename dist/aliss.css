@@ -89,6 +89,10 @@
   border-radius: 50%;
 }
 
+#aliss-pagination button,
+#aliss-pagination p { display: inline-block; }
+#aliss-pagination p { margin: 0 1em; }
+
 @keyframes rotate {
   0%    { transform: rotate(0deg); }
   100%  { transform: rotate(360deg); }

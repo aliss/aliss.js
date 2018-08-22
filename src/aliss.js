@@ -178,32 +178,32 @@ const ALISS = function(target, config) {
     if (context.config.displayOptions.show_category_select) {
       $('#aliss-category-selector-div').show();
     }
-    $('#aliss-results-div').append("<div id=aliss-pagination-div></div>");
+    $('#aliss-results-div').append("<div id=aliss-pagination></div>");
     context.renderFilterFields(response);
     context.renderServiceList(response);
   };
 
   ALISS.prototype.renderPagination = function () {
-    $('#aliss-pagination-div').empty();
+    $('#aliss-pagination').empty();
 
     if (context.request.parametersObject["page"] > 1){
-      $('#aliss-pagination-div').append("<button id=aliss-previous-page>Previous Page</button>");
+      $('#aliss-pagination').append("<button id=aliss-previous-page>Previous Page</button>");
       $('#aliss-previous-page').val("previous");
     }
 
-    $('#aliss-pagination-div').append("<p id=aliss-current-page></p>");
+    $('#aliss-pagination').append("<p id=aliss-current-page></p>");
     var p = (context.request.parametersObject["page"]) ? context.request.parametersObject["page"] : "1";
-    $('#aliss-current-page').text("Page: " + p);
+    $('#aliss-current-page').text("Page " + p);
 
     if ($('#aliss-next-page-link').val() != "") {
-      $('#aliss-pagination-div').append('<button id="aliss-next-page">Next Page</button>');
+      $('#aliss-pagination').append('<button id="aliss-next-page">Next Page</button>');
       $('#aliss-next-page').val("next");
     }
 
-    $('#aliss-pagination-div button').click(context.handlePageChange);
-    $('#aliss-pagination-div').append("<h4 id=aliss-no-previous-message>Start of Pages Please Select Next</h4>");
+    $('#aliss-pagination button').click(context.handlePageChange);
+    $('#aliss-pagination').append("<h4 id=aliss-no-previous-message>Start of Pages Please Select Next</h4>");
     $('#aliss-no-previous-message').hide();
-    $('#aliss-pagination-div').append("<h4 id=aliss-no-next-message>End of Results Please Go Back</h4>");
+    $('#aliss-pagination').append("<h4 id=aliss-no-next-message>End of Results Please Go Back</h4>");
     $('#aliss-no-next-message').hide();
   }
 
@@ -401,7 +401,7 @@ const ALISS = function(target, config) {
     var servicesArray = response.data;
     if (servicesArray.length < 1){
       context.renderSearchAgainButton()
-      $('#aliss-pagination-div').hide()
+      $('#aliss-pagination').hide()
       return;
     }
     var list = document.createElement('div');
@@ -413,7 +413,7 @@ const ALISS = function(target, config) {
     $('#aliss-next-page-link').val(response.next);
     $('#aliss-listings-div').append(list);
     $('#aliss-invalid-message').hide();
-    $('#aliss-pagination-div').show();
+    $('#aliss-pagination').show();
 
     context.renderPagination();
   };
