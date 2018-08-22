@@ -109,8 +109,8 @@ const ALISS = function(target, config) {
     context.config.processOptions(context.request);
     var inputForm = document.createElement('form');
     inputForm.id = "aliss-input-form"
-    $(inputForm).append("<input type=text id=aliss-postcode-field></input>");
-    $(inputForm).append("<input type=submit id=aliss-submit></input>");
+    $(inputForm).append('<input type="text" id="aliss-postcode-field" placeholder="Postcode e.g. G2 4AA"></input>');
+    $(inputForm).append('<input type="submit" id="aliss-submit"></input>');
     $('#aliss-target-div').empty();
     $('#aliss-target-div').append(inputForm);
     $('#aliss-target-div').append("<div id=aliss-search-header-div><div>")
