@@ -27,6 +27,11 @@
   border-radius: 100px;
 }
 
+input#aliss-postcode-field {
+  top: -1px;
+  position: relative;
+}
+
 #aliss-target-div input[type=email],
 #aliss-target-div input[type=password],
 #aliss-target-div input[type=phone],
@@ -92,6 +97,46 @@
 #aliss-pagination button,
 #aliss-pagination p { display: inline-block; }
 #aliss-pagination p { margin: 0 1em; }
+
+select#aliss-dropdown {
+  background-image:
+    linear-gradient(45deg, transparent 50%, gray 50%),
+    linear-gradient(135deg, gray 50%, transparent 50%),
+    linear-gradient(to right, #ccc, #ccc);
+  background-position:
+    calc(100% - 1.2em) calc(1em + 3px),
+    calc(100% - 17px) calc(1em + 3px),
+    calc(100% - 2.5em) 0.5em;
+  background-size:
+    8px 8px,
+    8px 8px,
+    1px 1.5em;
+  background-repeat: no-repeat;
+}
+
+select#aliss-dropdown:focus {
+  background-image:
+    linear-gradient(45deg, green 50%, transparent 50%),
+    linear-gradient(135deg, transparent 50%, green 50%),
+    linear-gradient(to right, #ccc, #ccc);
+  background-position:
+    calc(100% - 17px) 1em,
+    calc(100% - 1.2em) 1em,
+    calc(100% - 2.5em) 0.5em;
+  background-size:
+    8px 8px,
+    8px 8px,
+    1px 1.5em;
+  background-repeat: no-repeat;
+  border-color: green;
+  outline: 0;
+}
+
+select:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 #000;
+}
+
 
 @keyframes rotate {
   0%    { transform: rotate(0deg); }
