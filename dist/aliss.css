@@ -27,6 +27,7 @@
   border-radius: 100px;
 }
 
+input#aliss-keyword-search,
 input#aliss-postcode-field {
   top: -1px;
   position: relative;
