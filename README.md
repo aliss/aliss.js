@@ -48,6 +48,15 @@ Potential options are:
 }
 ```
 
+## Plugin Development
+
+PRs welcome!
+
+Edit `src/aliss.js`, then build for production by running webpack cli:
+
+`npx webpack --config webpack.config.js`
+
+
 ## Links
 
 - Production site: https://www.aliss.org
