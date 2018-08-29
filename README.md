@@ -28,10 +28,6 @@ window.aliss = new ALISS('#aliss-target',{});
 </script>
 ```
 
-**Example**
-
-You can find [example code](https://glitch.com/~aliss-js), and a [demo](https://aliss-js.glitch.me/) on glitch.com.
-
 ### Options
 
 `ALISS(target,options)` - takes two parameters, a target, and an options object.
@@ -55,6 +51,12 @@ Hide the category select and confine service results to the "money" category:
 ```
 window.aliss = new ALISS('#aliss-target', { category: "money", show_category_select: false });
 ```
+
+
+## Demo
+
+You can find [example code](https://glitch.com/~aliss-js), and a [demo](https://aliss-js.glitch.me/) on glitch.com.
+
 
 ## Plugin Development
 
