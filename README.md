@@ -44,6 +44,8 @@ Potential options are:
 }
 ```
 
+You can find the hierarchy of categories and category slugs via the [ALISS API](https://www.aliss.org/api/v4/categories/).
+
 #### Examples
 
 Hide the category select and confine service results to the "money" category:
