@@ -40,12 +40,20 @@ Potential options are:
 
 ```
 {
-  "q": <string: a default keyword>,
-  "category": <string: category slug>,
-  "show_category_select": <boolean: whether to display the category selector>,
-  "show_keyword_search": <boolean: whether to display the keyword input>,
-  "page_size": <int: number of services returned per page>,
+  "q": <string: a default keyword, defaults to blank>,
+  "category": <string: category slug, defaults to blank>,
+  "show_category_select": <boolean: whether to display the category selector, defaults to true>,
+  "show_keyword_search": <boolean: whether to display the keyword input, defaults to true>,
+  "page_size": <int: number of services returned per page, defaults to 10>,
 }
+```
+
+#### Examples
+
+Hide the category select and confine service results to the "money" category:
+
+```
+window.aliss = new ALISS('#aliss-target', { category: "money", show_category_select: false });
 ```
 
 ## Plugin Development
