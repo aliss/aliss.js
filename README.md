@@ -44,7 +44,7 @@ Potential options are:
 }
 ```
 
-You can find the hierarchy of categories and category slugs via the [ALISS API](https://www.aliss.org/api/v4/categories/).
+You can find the full list of categories including slugs via the [ALISS API](https://www.aliss.org/api/v4/categories/).
 
 #### Examples
 
