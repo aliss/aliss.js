@@ -229,7 +229,7 @@ const ALISS = function(target, config) {
   }
 
   //Render the top level categories and filter the results based on their selection.
-  ALISS.prototype.renderCategoryOptions = function (response) {
+  ALISS.prototype.renderCategoryOptions = function(response) {
     var dropdownDiv = document.createElement('div')
     dropdownDiv.id = "aliss-dropdown-div";
     dropdownDiv.className = "aliss-category-dropdown-div";
@@ -237,8 +237,10 @@ const ALISS = function(target, config) {
     var dropdownSelect = document.createElement('select');
     dropdownSelect.id = "aliss-dropdown";
     dropdownSelect.className = "aliss-dropdown";
+
     $('#aliss-dropdown-div').append(dropdownSelect);
     $('#aliss-dropdown').append("<option value=categories>Categories</option>");
+
     $.each(response.data, function(index, category){
       var option = document.createElement("option");
       option.textContent = category.name;
@@ -249,14 +251,13 @@ const ALISS = function(target, config) {
       $('#' + option.id).data(category);
     });
 
-    if (this.request.parametersObject["category"] != null){
-      var predefinedCategory =  this.request.parametersObject["category"];
-
+    if (context.request.parametersObject["category"] != null){
+      var predefinedCategory =  context.request.parametersObject["category"];
       if ($('#aliss-dropdown:contains(' + predefinedCategory + ')')) {
         $('#' + predefinedCategory).attr("selected", true);
         var categoryObject = $('#' + predefinedCategory).data();
         var target = $('#' + predefinedCategory).parent().parent();
-        this.renderSubCategoryDropdown(categoryObject, target);
+        context.renderSubCategoryDropdown(categoryObject, target);
       }
     }
 
@@ -264,8 +265,8 @@ const ALISS = function(target, config) {
   }
 
   // When user selects dropdown option re call API and render the filtered service list
-  ALISS.prototype.handleFilterByCategory = () => {
-    $(this).siblings().remove();
+  ALISS.prototype.handleFilterByCategory = (event) => {
+    $(event.target).siblings().remove();
 
     //   If the "blank" category option is selected remove category filter and render the list of services
     if (event.target.value == "categories"){
@@ -276,14 +277,13 @@ const ALISS = function(target, config) {
       return;
     }
     //   If the "blank" sub-category option is selected remove sub-category filter and render the list of services
+    var parent = $(event.target).parent();
     if (event.target.value == "sub-categories"){
-      var parentID = $(this).parent()[0].id;
-      console.log("parent id?", parentID)
+      var parentID = $(event.target).parent()[0].id;
       var sortedID = parentID.replace('-select', "")
       var categoryObject = $('#' + sortedID).data();
-      var target = $(this).parent();
-      target.children().remove();
-      context.renderSubCategoryDropdown(categoryObject, target);
+      parent.children().remove();
+      context.renderSubCategoryDropdown(categoryObject, parent);
       context.request.parametersObject["category"] = sortedID;
       context.request.parametersObject["page"] = null;
       context.apiRequest(context.renderServiceList);
@@ -291,17 +291,15 @@ const ALISS = function(target, config) {
     }
 
     var categoryObject = $('#' + event.target.value).data();
-    var target = $(this).parent();
-    context.renderSubCategoryDropdown(categoryObject, target);
+    context.renderSubCategoryDropdown(categoryObject, parent);
     context.request.parametersObject["category"] = event.target.value;
     context.request.parametersObject["page"] = null;
     context.apiRequest(context.renderServiceList);
   }
 
-  ALISS.prototype.renderSubCategoryDropdown = function (categoryObject, target) { //RORY: We need to handle what happens when a user selects a sub-category then wants to clear the sub-category
-    if (categoryObject.sub_categories.length === 0){
-      return;
-    }
+  ALISS.prototype.renderSubCategoryDropdown = function (categoryObject, target) { //todo - We need to handle what happens when a user selects a sub-category then wants to clear the sub-category
+    if (categoryObject.sub_categories.length === 0){ return; }
+
     var subDiv = document.createElement('div');
     subDiv.id = categoryObject.slug + '-select';
 
@@ -369,7 +367,6 @@ const ALISS = function(target, config) {
     $('#aliss-keyword-search-div').append(form);
 
     form.submit(function( event ) {
-      console.log("Handler for submit() called.");
       event.preventDefault();
     });
 
