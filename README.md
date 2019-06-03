@@ -35,7 +35,7 @@ window.aliss = new ALISS('#aliss-target',{});
 
 2. Upon activation, visit the `Settings » Insert Headers` and Footers page. You will see two boxes, one for the header and the other for the footer section.
 
-3. Follow the (install instructions above)[#install].
+3. Follow the [install instructions above](#install).
 
 
 ### Options
