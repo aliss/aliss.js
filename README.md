@@ -4,7 +4,7 @@
 
 [`aliss.js`](https://github.com/aliss/aliss.js/tree/master/dist) is a javascript plugin for anyone who wants to embed ALISS search on their own site.
 
-## Usage
+## Install
 
 1. <a href="https://raw.githubusercontent.com/aliss/aliss.js/master/dist/aliss.js" download>Download `aliss.js`</a>
 
@@ -20,13 +20,23 @@
 <div id="aliss-target"></div>
 ```
 
-4. Put this at the bottom of the page with the new element
+4. Put this at the footer of the page with the new element
 
 ```
 <script>
 window.aliss = new ALISS('#aliss-target',{});
 </script>
 ```
+
+
+## Install with Wordpress
+
+1. Install the ["Insert Headers and Footers"](https://wordpress.org/plugins/insert-headers-and-footers/) wordpress plugin, or similar plugin which allows you to insert HTML `<script>` tags.
+
+2. Upon activation, visit the `Settings » Insert Headers` and Footers page. You will see two boxes, one for the header and the other for the footer section.
+
+3. Follow the (install instructions above)[#install].
+
 
 ### Options
 
@@ -45,6 +55,7 @@ Potential options are:
 ```
 
 You can find the full list of categories including slugs via the [ALISS API](https://www.aliss.org/api/v4/categories/).
+
 
 #### Examples
 
