@@ -83,6 +83,6 @@ Edit `src/aliss.js`, then build for production by running webpack cli:
 ## Links
 
 - Production site: https://www.aliss.org
-- Search API endpoint (v3): https://www.aliss.org/api/v3/search/
+- Search API endpoint (v4): https://www.aliss.org/api/v4/search/
 - API docs: http://docs.aliss.org
 - API docs repo: https://github.com/aliss/Docs
