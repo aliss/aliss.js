@@ -27,6 +27,6 @@
   },
   "homepage": "https://github.com/aliss/aliss.js#readme",
   "dependencies": {
-    "jquery": ">=3.4.0"
+    "jquery": ">=3.5.0"
   }
 }
