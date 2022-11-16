@@ -508,7 +508,7 @@ const ALISS = function(target, config) {
   //Render a search again button which increases radius of search
   ALISS.prototype.renderSearchAgainButton = function () {
     $('#aliss-listings-div').empty()
-    $('#aliss-listings-div').append("<h3>Sorry, we couldn't find anything using those terms near EH21 6UW.</h3>")
+    $('#aliss-listings-div').append("<h3>Sorry, we couldn't find anything using those terms near that postcode.</h3>")
     $('#aliss-listings-div').append("<p>You can try searching again over a wider area:</p>")
     $('#aliss-listings-div').append("<button id=aliss-search-again-radius>Search Again</button>")
     $('#aliss-invalid-message').hide();
